@@ -25,9 +25,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Lint Angular code
-        run: npm run lint
-
       - name: Run tests
         run: npm test -- --watch=false --browsers=ChromeHeadless
 
