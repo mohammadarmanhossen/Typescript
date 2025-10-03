@@ -1,7 +1,10 @@
-name: Deploy Angular 20 + Tailwind CSS to Vercel
+name: Angular CI/CD with Vercel CLI
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
@@ -10,28 +13,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout Repository
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
+          cache: 'npm'
 
-      # 3️⃣ Install Dependencies
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      # 4️⃣ Build Angular App
-      - name: Build Angular App
-        run: npm run build --if-present
+      - name: Lint Angular code
+        run: npm run lint
 
-      # 5️⃣ Deploy to Vercel
-      # - name: Deploy to Vercel
-      #   run: |
-      #     npm install -g vercel@latest
-      #     vercel --prod --token=$VERCEL_TOKEN --confirm --cwd ./dist/my-app
-      #   env:
-      #     VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Run tests
+        run: npm test -- --watch=false --browsers=ChromeHeadless
+
+      - name: Build Angular app
+        run: npm run build -- --output-path=dist/your-app-name
+
+      - name: Deploy to Vercel
+        run: |
+          npm install -g vercel
+          vercel --prod --token=$VERCEL_TOKEN --confirm \
+            --org $VERCEL_ORG_ID \
+            --project $VERCEL_PROJECT_ID \
+            --cwd ./dist/your-app-name
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
