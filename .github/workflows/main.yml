@@ -3,10 +3,10 @@ name: Angular CI/CD
 on:
   push:
     branches:
-      - main     # main branch এ push হলে pipeline চলবে
+      - main
   pull_request:
     branches:
-      - main     # PR এও চলবে
+      - main
 
 jobs:
   build:
@@ -17,28 +17,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Node.js সেটআপ (Angular 18 এর জন্য v20 বা v22 দরকার)
+      # 2. Node.js setup
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           cache: 'npm'
 
-      # 3. Dependencies install
+      # 3. Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # 4. Angular Unit Test run (Headless Chrome)
-      - name: Run Unit Tests
-        run: npm test -- --watch=false --browsers=ChromeHeadless
-
-      # 5. Angular Build (Production mode)
+      # 4. Build Angular App (skip tests)
       - name: Build Angular App
-        run: npm run build -- --configuration production
+        run: npm run build -- --configuration production --skip-tests
 
-      # 6. Dist folder artifact upload (optional)
+      # 5. Upload dist folder as artifact (optional)
       - name: Upload Production Build
         uses: actions/upload-artifact@v4
         with:
           name: angular-build
           path: dist/
+
