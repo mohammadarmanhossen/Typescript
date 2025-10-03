@@ -3,35 +3,35 @@ name: Deploy Angular 20 + Tailwind CSS to Vercel
 on:
   push:
     branches:
-      - main
+      - main  # main branch push এ auto deploy হবে
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout Repo
-      - name: Checkout Repository
+      # 1️⃣ Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '20'   # Latest LTS Node version
 
       # 3️⃣ Install Dependencies
-      - name: Install Dependencies
-        run: npm install
+      - name: Install dependencies
+        run: npm ci  # npm ci faster & more reliable for CI
 
-      # 4️⃣ Build Angular App
-      - name: Build Angular 20 + Tailwind
+      # 4️⃣ Build Angular 20 + Tailwind CSS
+      - name: Build Angular App
         run: npm run build --if-present
 
       # 5️⃣ Deploy to Vercel
       - name: Deploy to Vercel
         run: |
-          npm install -g vercel
+          npm install -g vercel@latest
           vercel --prod --token=$VERCEL_TOKEN --confirm \
             --org $VERCEL_ORG_ID \
             --project $VERCEL_PROJECT_ID \
@@ -40,5 +40,3 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
- 
