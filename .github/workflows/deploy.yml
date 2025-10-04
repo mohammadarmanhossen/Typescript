@@ -28,7 +28,7 @@ jobs:
       - name: Build Angular app
         run: npm run build -- --output-path=dist/my-app
 
-      # 5️⃣ Ensure vercel.json exists
+      # 5️⃣ Ensure vercel.json exists (Angular SPA routing)
       - name: Add vercel.json if missing
         run: |
           if [ ! -f vercel.json ]; then
@@ -43,10 +43,10 @@ jobs:
             }' > vercel.json
           fi
 
-      # 6️⃣ Deploy to Vercel
+      # 6️⃣ Deploy to Vercel from project root
       - name: Deploy to Vercel
         run: |
           npm install -g vercel
-          vercel --prod --token=$VERCEL_TOKEN --confirm --cwd ./dist/my-app
+          vercel --prod --token=$VERCEL_TOKEN --confirm
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
