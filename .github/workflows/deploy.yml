@@ -34,4 +34,5 @@ jobs:
           npm install -g vercel
           vercel --prod --token=$VERCEL_TOKEN --confirm --cwd ./dist/my-app
         env:
+          
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
